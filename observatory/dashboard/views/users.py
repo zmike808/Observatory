@@ -148,6 +148,10 @@ def register(request):
     
     try:
       form = RegistrationForm(request.POST)
+	  
+	  #make emails case insensitive.
+	  form.cleaned_data["email"] = form.cleaned_data["email"].lower()
+	  
       if not form.is_valid():
         error_header = "That's not quite right."
         raise RegisterError()
@@ -192,13 +196,16 @@ def register(request):
 def create_user(request, form):
   data = form.cleaned_data
   
+  #make emails case insensitive.
+  data["email"] = data["email"].lower()
+
   # use an md5 of the email as a username
   m = md5()
   m.update(data["email"])
 
   # if it's ok, register the user
   user = User.objects.create_user(m.hexdigest()[0:30],
-                                  data['email'],
+                                  data['email'].lower(),
                                   data['password'])
   
   # set the user's first/last names
@@ -254,7 +261,10 @@ def login(request):
     if login_form.is_valid():
       try:
         data = login_form.cleaned_data
-        
+     
+		#make emails case insensitive.
+		data["email"] = data["email"].lower()
+
         # query for a user via email
         try:
           user = User.objects.get(email = data['email'])
@@ -305,6 +315,10 @@ def forgot_password(request):
 	if forgot_password_form.is_valid():	
 
 		data = forgot_password_form.cleaned_data
+
+		#make emails case insensitive.
+		data["email"] = data["email"].lower()
+
 		try:
 			user = User.objects.get(email = data['email'])
 		except:
