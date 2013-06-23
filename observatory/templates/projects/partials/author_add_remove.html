@@ -6,19 +6,25 @@
                       method="post">
                     <input type="submit" value="I work on this!"
                            class="green button-small" />
+						   
+					<input type="hidden" value="{{ project.id }}"
+                       name="project_id" />
+                <input type="hidden" value="{{ user.id }}"
+                       name="user_id" />
+				</form>
             {% else %}
                 <form action="{% url dashboard.views.projects.remove_user %}"
                       method="post">
                     <input type="submit"
                            value="I'm not working on this anymore"
                            class="green button-small" />
-            {% endif %}
                 {% csrf_token %}
                 <input type="hidden" value="{{ project.id }}"
                        name="project_id" />
                 <input type="hidden" value="{{ user.id }}"
                        name="user_id" />
-            </form>
+				</form>
+				{% endif %}
         {% else %}
             Author request sent!
         {% endif %}
